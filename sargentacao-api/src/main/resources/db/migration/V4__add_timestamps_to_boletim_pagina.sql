@@ -1,0 +1,5 @@
+ALTER TABLE boletim_pagina
+  ADD COLUMN IF NOT EXISTS created_at TIMESTAMP NOT NULL DEFAULT now();
+
+ALTER TABLE boletim_pagina
+  ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP NULL;

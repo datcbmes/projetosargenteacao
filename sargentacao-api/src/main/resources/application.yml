@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/sargentacao
+    username: sargentacao_user
+    password: mimargui!1Q
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db.migration/migration
+
+app:
+  boletim:
+    contexto:
+      antes: 250
+      depois: 250

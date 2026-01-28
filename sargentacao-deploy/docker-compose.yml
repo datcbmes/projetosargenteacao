@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: sargentacao
+      POSTGRES_USER: sargentacao_user
+      POSTGRES_PASSWORD: mimargui!1Q
+    # Exponha apenas para a rede docker (mais seguro).
+    expose:
+      - "5432"
+    volumes:
+      - sarg_db:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sargentacao_user -d sargentacao"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: ../sargentacao-api
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/sargentacao
+      SPRING_DATASOURCE_USERNAME: sargentacao_user
+      SPRING_DATASOURCE_PASSWORD: mimargui!1Q
+      SPRING_FLYWAY_ENABLED: "true"
+      SPRING_FLYWAY_LOCATIONS: "classpath:db/migration"
+    depends_on:
+      - db
+    expose:
+      - "8080"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ../sargentacao-web
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  sarg_db:
